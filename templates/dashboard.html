@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+
+</head>
+<body>
+  <!-- for header part -->
+  <header>
+    <div class="logosec" style="float: left ;">
+      <div class="logo">Fuel Management System</div>
+    </div>
+    <div class="searchbar">
+      <img src="static\imgs\logo.png" class="icn" alt="logo">
+    </div>
+    <div class="message">
+      Welcome! <b>Name: </b> {{user.name}} <b>Email: </b> {{user.email}}
+    </div>
+  </header>
+  <div class="main-container"> 
+    <div class="navcontainer"> 
+        <nav class="nav"> 
+            <div class="nav-upper-options"> 
+                <div class="nav-option option1"> 
+                    <img src= 
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210182148/Untitled-design-(29).png"
+                        class="nav-img" 
+                        alt="dashboard"> 
+                    <h5> Dashboard</h5> 
+                </div> 
+
+                <div class="option2 nav-option"> 
+                  
+                    <img src= 
+                    "https://media.geeksforgeeks.org/wp-content/uploads/20221210183322/9.png"
+                        class="nav-img" 
+                        alt="articles"> 
+                    <h4> Vehicles</h4> 
+                </div> 
+
+                <div class="nav-option option3"> 
+                    <img src= 
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/5.png"
+                        class="nav-img" 
+                        alt="report"> 
+                    <h4>Fuel Report</h4> 
+                </div> 
+
+                <div class="nav-option option4"> 
+                    <img src= 
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210183321/6.png"
+                        class="nav-img" 
+                        alt="institution"> 
+                    <h4> Institution</h4> 
+                </div> 
+
+                <div class="nav-option option5"> 
+                  
+                    <img src= 
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210183323/10.png"
+                        class="nav-img" 
+                        alt="blog"> 
+                    <h4> Profile</h4> 
+                </div> 
+
+                <div class="nav-option option6"> 
+                    <img src= 
+"https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png"
+                        class="nav-img" 
+                        alt="settings"> 
+                    <h4> Settings</h4> 
+                </div> 
+>
+    
+      
+        <div class="nav-option logout">
+          <a href="/logout" class="button2">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+    <div class="searchbar2">
+      <input type="text" placeholder="Search">
+      <div class="searchbtn">
+        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png" class="icn srchicn" alt="search-button">
+      </div>
+    </div>
+    <div class="box-container">
+      <div class="box box1">
+        <div class="text">
+          <h2 class="topic-heading" id="devices_logged">{{ devices_logged }}</h2>
+          <h2 class="topic">Device Entries Logged</h2>
+        </div>
+        <img src="/static/imgs/sensor.png" alt="Views">
+      </div>
+      <div class="box box2">
+        <div class="text">
+          <h2 class="topic-heading" id="active_devices">{{ active_devices }}</h2>
+          <h2 class="topic">Active Devices</h2>
+        </div>
+        <img src="/static/imgs/car.png" alt="likes">
+      </div>
+      <div class="box box3">
+        <div class="text">
+          <h2 class="topic-heading">320</h2>
+          <h2 class="topic">Comments</h2>
+        </div>
+        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png" alt="comments">
+      </div>
+      <div class="box box4">
+        <div class="text">
+          <h2 class="topic-heading">70</h2>
+          <h2 class="topic">Published</h2>
+        </div>
+        <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210185029/13.png" alt="published">
+      </div>
+    </div>
+    <script>
+      // Function to fetch and update device entries logged count
+      function updateDeviceEntriesCount() {
+          $.get("/api/device_entries_logged", function(data) {
+              $("#devices_logged").text(data.device_entries_logged);
+          });
+      }
+  
+      // Function to fetch and update active devices count
+      function updateActiveDevicesCount() {
+          $.get("/api/no_of_devices_active", function(data) {
+              $("#active_devices").text(data.no_of_devices_active);
+          });
+      }
+  
+      // Function to periodically update counts
+      function startAutoRefresh() {
+          setInterval(function() {
+              updateDeviceEntriesCount();
+              updateActiveDevicesCount();
+          }, 1000); // Refresh every 5 seconds
+      }
+  
+      // Call the function to start auto-refresh when the page loads
+      $(document).ready(function() {
+          startAutoRefresh();
+      });
+  </script>
+    <div class="report-container">
+      <div class="report-header">
+        <h1 class="recent-Articles">Recent Activity</h1>
+      </div>
+      <br>
+
+
+  
+
+
+      
+      <div id="google-chart-container">
+
+
+  <!--For test data simulation-->
+  <button id="stop-simulation" class="styled-button1">Stop</button>
+
+  <button id="start-simulation" class="styled-button2">Start Simulation</button>
+  
+  <script>
+    $(document).ready(function() {
+        $('#start-simulation').on('click', function() {
+            $.ajax({
+                url: '/start_simulation',
+                method: 'POST',
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(error) {
+                    alert('Error starting simulation: ' + error.responseJSON.message);
+                }
+            });
+        });
+
+        $('#stop-simulation').on('click', function() {
+            $.ajax({
+                url: '/stop_simulation',
+                method: 'POST',
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(error) {
+                    alert('Error stopping simulation: ' + error.responseJSON.message);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+        <h2>Fuel Consumption Line Chart</h2>
+
+
+
+        <br>
+        <input type="date" id="startDatePicker" title="Select Start Date">
+        <input type="date" id="endDatePicker" title="Select End Date">
+        <button id="filterByDateRangeBtn" class="styled-button">Filter by Date Range</button>
+        <input type="time" id="startTimePicker" title="Select Start Time" step="1" disabled>
+        <input type="time" id="endTimePicker" title="Select End Time" step="1" disabled>
+        <button id="filterByTimeRangeBtn" class="styled-button" disabled>Filter by Time Range</button>
+        <button class="styled-button">
+            <a href="{{ url_for('dashboard', filter='latest', page=1) }}" class="styled-link">Go to Latest</a>
+        </button>
+        <button id="sortByHourBtn" class="styled-button" style="display: none;">Sort by Hour</button>
+        
+        
+        <button id="sortByMinuteBtn" class="styled-button" style="display: none;">Sort by Minute</button>
+      
+        <div id="currentDateTime" style="font-weight: bold; margin-top: 10px;"></div>
+        
+       
+    
+      </div>
+
+<!-- Loading message -->
+<div id="loadingMessage" class="loading-message">Loading...</div>
+    <div id="plotly-chart" style="width: 100%; height: 400px;"></div>
+   
+    <div id="noDataMessage" class="no-data-message">No data available for the selected range.</div>
+    
+    <script>
+       let zoomLevel = 10; // Initial zoom level
+    let jsonDataParsed = null; // Store parsed JSON data
+
+    function drawChart(data, layout) {
+      $('#loadingMessage').hide(); // Hide loading message
+      Plotly.newPlot('plotly-chart', data, layout);
+    }
+
+    function fetchDataAndDrawChart() {
+      $('#loadingMessage').show(); // Show loading message
+  
+      $.ajax({
+        url: "/api/sensor_data",
+        dataType: "json",
+        success: function(response) {
+          jsonDataParsed = response;
+
+          var data = [{
+            x: jsonDataParsed.labels.slice(-zoomLevel),
+            y: jsonDataParsed.volumeLiters.slice(-zoomLevel),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Liters'
+          }];
+
+          var layout = {
+            title: 'Fuel Consumption',
+            xaxis: {
+              title: 'Time'
+            },
+            yaxis: {
+              title: 'Liters'
+            }
+          };
+
+          drawChart(data, layout);
+        },
+        error: function() {
+          $('#noDataMessage').show();
+          $('#loadingMessage').hide(); // Hide loading message if error
+        }
+      });
+    }
+
+    function filterByDateRange(startDate, endDate) {
+      if (!jsonDataParsed) return;
+
+      var filteredData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      for (var i = 0; i < jsonDataParsed.labels.length; i++) {
+        var currentDate = jsonDataParsed.labels[i].split(" ")[0].split('/').reverse().join('-');
+        if (currentDate >= startDate && currentDate <= endDate) {
+          filteredData.labels.push(jsonDataParsed.labels[i]);
+          filteredData.volumeLiters.push(jsonDataParsed.volumeLiters[i]);
+        }
+      }
+
+      if (filteredData.labels.length === 0) {
+        $('#noDataMessage').show();
+      } else {
+        $('#noDataMessage').hide();
+        var data = [{
+          x: filteredData.labels,
+          y: filteredData.volumeLiters,
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: 'Liters'
+        }];
+
+        var layout = {
+          title: 'Fuel Consumption',
+          xaxis: {
+            title: 'Time'
+          },
+          yaxis: {
+            title: 'Liters'
+          }
+        };
+
+        drawChart(data, layout);
+
+        if (startDate === endDate) {
+          $('#startTimePicker').prop('disabled', false);
+          $('#endTimePicker').prop('disabled', false);
+          $('#filterByTimeRangeBtn').prop('disabled', false);
+          $('#sortByHourBtn').show();
+          $('#sortByMinuteBtn').show();
+        } else {
+          $('#startTimePicker').prop('disabled', true);
+          $('#endTimePicker').prop('disabled', true);
+          $('#filterByTimeRangeBtn').prop('disabled', true);
+          $('#sortByHourBtn').hide();
+          $('#sortByMinuteBtn').hide();
+        }
+      }
+    }
+
+    function filterByTimeRange(startDate, startTime, endDate, endTime) {
+      if (!jsonDataParsed) return;
+
+      var filteredData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      var startDateTimeStr = `${startDate.split('-').reverse().join('/')} ${startTime}`;
+      var endDateTimeStr = `${endDate.split('-').reverse().join('/')} ${endTime}`;
+
+      for (var i = 0; i < jsonDataParsed.labels.length; i++) {
+        var dateTimeStr = jsonDataParsed.labels[i]; // Assuming format is "dd/mm/yyyy hh:mm:ss"
+        if (dateTimeStr >= startDateTimeStr && dateTimeStr <= endDateTimeStr) {
+          filteredData.labels.push(jsonDataParsed.labels[i]);
+          filteredData.volumeLiters.push(jsonDataParsed.volumeLiters[i]);
+        }
+      }
+
+      if (filteredData.labels.length === 0) {
+        $('#noDataMessage').show();
+      } else {
+        $('#noDataMessage').hide();
+        var data = [{
+          x: filteredData.labels,
+          y: filteredData.volumeLiters,
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: 'Liters'
+        }];
+
+        var layout = {
+          title: 'Fuel Consumption',
+          xaxis: {
+            title: 'Time'
+          },
+          yaxis: {
+            title: 'Liters'
+          }
+        };
+
+        drawChart(data, layout);
+      }
+    }
+
+    function sortByHour(date) {
+      if (!jsonDataParsed) return;
+
+      var filteredData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      for (var i = 0; i < jsonDataParsed.labels.length; i++) {
+        var dateTimeStr = jsonDataParsed.labels[i];
+        var currentDate = dateTimeStr.split(" ")[0].split('/').reverse().join('-');
+        if (currentDate === date) {
+          filteredData.labels.push(jsonDataParsed.labels[i]);
+          filteredData.volumeLiters.push(jsonDataParsed.volumeLiters[i]);
+        }
+      }
+
+      var hourlyData = {};
+      for (var i = 0; i < filteredData.labels.length; i++) {
+        var hour = filteredData.labels[i].split(" ")[1].split(":")[0];
+        if (!hourlyData[hour]) {
+          hourlyData[hour] = [];
+        }
+        hourlyData[hour].push(filteredData.volumeLiters[i]);
+      }
+
+      var sortedData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      for (var hour in hourlyData) {
+        var avgVolume = hourlyData[hour].reduce((a, b) => a + b, 0) / hourlyData[hour].length;
+        sortedData.labels.push(`${date.split('-').reverse().join('/')} ${hour}:00:00`);
+        sortedData.volumeLiters.push(avgVolume);
+      }
+
+      if (sortedData.labels.length === 0) {
+        $('#noDataMessage').show();
+      } else {
+        $('#noDataMessage').hide();
+        var data = [{
+          x: sortedData.labels,
+          y: sortedData.volumeLiters,
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: 'Liters'
+        }];
+
+        var layout = {
+          title: 'Fuel Consumption',
+          xaxis: {
+            title: 'Time'
+          },
+          yaxis: {
+            title: 'Liters'
+          }
+        };
+
+        drawChart(data, layout);
+      }
+    }
+
+    function sortByMinute(date) {
+      if (!jsonDataParsed) return;
+
+      var filteredData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      for (var i = 0; i < jsonDataParsed.labels.length; i++) {
+        var dateTimeStr = jsonDataParsed.labels[i];
+        var currentDate = dateTimeStr.split(" ")[0].split('/').reverse().join('-');
+        if (currentDate === date) {
+          filteredData.labels.push(jsonDataParsed.labels[i]);
+          filteredData.volumeLiters.push(jsonDataParsed.volumeLiters[i]);
+        }
+      }
+
+      var minuteData = {};
+      for (var i = 0; i < filteredData.labels.length; i++) {
+        var time = filteredData.labels[i].split(" ")[1];
+        var hourMinute = time.split(":").slice(0, 2).join(":");
+        if (!minuteData[hourMinute]) {
+          minuteData[hourMinute] = [];
+        }
+        minuteData[hourMinute].push(filteredData.volumeLiters[i]);
+      }
+
+      var sortedData = {
+        labels: [],
+        volumeLiters: []
+      };
+
+      for (var hourMinute in minuteData) {
+        var avgVolume = minuteData[hourMinute].reduce((a, b) => a + b, 0) / minuteData[hourMinute].length;
+        sortedData.labels.push(`${date.split('-').reverse().join('/')} ${hourMinute}:00`);
+        sortedData.volumeLiters.push(avgVolume);
+      }
+
+      if (sortedData.labels.length === 0) {
+        $('#noDataMessage').show();
+      } else {
+        $('#noDataMessage').hide();
+        var data = [{
+          x: sortedData.labels,
+          y: sortedData.volumeLiters,
+          type: 'scatter',
+          mode: 'lines+markers',
+          name: 'Liters'
+        }];
+
+        var layout = {
+          title: 'Fuel Consumption',
+          xaxis: {
+            title: 'Time'
+          },
+          yaxis: {
+            title: 'Liters'
+          }
+        };
+
+        drawChart(data, layout);
+      }
+    }
+
+    $(document).ready(function() {
+      $('#loadingMessage').show(); // Show loading message initially
+      fetchDataAndDrawChart();
+
+      // Zoom in function
+      $('#zoomInBtn').click(function() {
+        if (zoomLevel > 1) {
+          zoomLevel--;
+          fetchDataAndDrawChart();
+        }
+      });
+
+      // Zoom out function
+      $('#zoomOutBtn').click(function() {
+        if (jsonDataParsed && zoomLevel < jsonDataParsed.labels.length) {
+          zoomLevel++;
+          fetchDataAndDrawChart();
+        }
+      });
+
+      // Function to update the current date and time
+      function updateDateTime() {
+        var now = new Date();
+        var day = String(now.getDate()).padStart(2, '0');
+        var month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        var year = now.getFullYear();
+        var hours = String(now.getHours()).padStart(2, '0');
+        var minutes = String(now.getMinutes()).padStart(2, '0');
+        var seconds = String(now.getSeconds()).padStart(2, '0');
+        var currentDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+        // Update the div with the current date and time
+        $('#currentDateTime').text('Current Date and Time: ' + currentDateTime);
+      }
+
+      // Update the time initially and then every second
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+
+      // Filter by date range logic
+      $('#filterByDateRangeBtn').on('click', function() {
+        var startDate = $('#startDatePicker').val();
+        var endDate = $('#endDatePicker').val();
+
+        if (startDate && endDate) {
+          filterByDateRange(startDate, endDate);
+        } else {
+          alert("Please select a valid date range.");
+        }
+      });
+
+      // Filter by time range logic
+      $('#filterByTimeRangeBtn').on('click', function() {
+        var startDate = $('#startDatePicker').val();
+        var startTime = $('#startTimePicker').val();
+        var endDate = $('#endDatePicker').val();
+        var endTime = $('#endTimePicker').val();
+
+        if (startTime && endTime) {
+          filterByTimeRange(startDate, startTime, endDate, endTime);
+        } else {
+          alert("Please select a valid time range.");
+        }
+      });
+
+      // Sort by hour logic
+      $('#sortByHourBtn').on('click', function() {
+        var startDate = $('#startDatePicker').val();
+        sortByHour(startDate);
+      });
+
+      // Sort by minute logic
+      $('#sortByMinuteBtn').on('click', function() {
+        var startDate = $('#startDatePicker').val();
+        sortByMinute(startDate);
+      });
+
+        $('#goToLatestBtn').on('click', function() {
+            // Redraw with only the latest 10 entries
+            var latestData = new google.visualization.DataTable();
+            latestData.addColumn('string', 'Time');
+            latestData.addColumn('number', 'Liters');
+
+            for (var i = startIndex; i < jsonDataParsed.labels.length; i++) {
+                latestData.addRow([jsonDataParsed.labels[i], jsonDataParsed.volumeLiters[i]]);
+            }
+
+            chart.draw(latestData, options);
+        });
+    } );
+</script>
+
+      
+        
+        
+  <br>
+      <br>
+      <h2>Sensor Data Receiver</h2>
+      <div class="table-responsive">
+        <div id="seachtab">
+          <form method="get" action="{{ url_for('dashboard') }}">
+            <input type="text" name="query" value="{{ search_query }}" placeholder="Search by ID or other fields...">
+            <button type="submit">Search</button>
+        </form>
+        </div>
+        <div id="filtertab" class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter
+          </button>
+          <div class="dropdown-menu" aria-labelledby="filterDropdown">
+            <a class="dropdown-item" href="{{ url_for('dashboard', filter='latest') }}">Latest Entries</a>
+            <a class="dropdown-item" href="{{ url_for('dashboard', filter='oldest') }}">Oldest Entries</a>
+          </div>
+        </div>
+        {% if filter_option == 'latest' %}
+        <p class="filter-message">Displaying the latest entries</p>
+        {% elif filter_option == 'oldest' %}
+        <p class="filter-message">Displaying the oldest entries</p>
+        {% endif %}
+        
+       
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Full Address</th>
+              <th>Sensor Data</th>
+              <th>Volume (Liters)</th>
+              <th>Vehicle No</th>
+              <th>QR Code</th>
+              <th>PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data_point in sense_data %}
+            <tr>
+              <td>{{ data_point.id }}</td>
+              <td>{{ data_point.date }}</td>
+              <td>{{ data_point.full_addr }}</td>
+              <td>{{ data_point.sensor_data }}</td>
+              <td>{{ data_point.volume_liters }}</td>
+              <td>{{ data_point.vehicleno }}</td>
+              <td><img src="{{ url_for('generate_qr', id=data_point.id) }}" alt="QR Code"></td>
+              <td><a href="{{ url_for('generate_pdf', id=data_point.id) }}" class="btn btn-primary">Download PDF</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <!-- Pagination -->
+<div class="pagination-container">
+  <div class="pagination">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if pagination.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('dashboard', page=pagination.prev_num, filter=filter_option, query=request.args.get('query', '')) }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('dashboard', page=page_num, filter=filter_option, query=request.args.get('query', '')) }}">{{ page_num }}</a>
+        </li>
+        {% endfor %}
+        {% if pagination.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('dashboard', page=pagination.next_num, filter=filter_option, query=request.args.get('query', '')) }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+</script>
+
+
+</body>
+</html>
+
