@@ -191,6 +191,8 @@ display: none;
 width: 80px; 
 } 
 .nav-option { 
+  text-decoration: none;
+  text-decoration-line: none;
 width: 250px; 
 height: 60px; 
 display: flex; 
@@ -201,6 +203,25 @@ transition: all 0.1s ease-in-out;
 
 
 } 
+
+.settings-link {
+  display: flex;
+  align-items: center; /* Aligns items vertically center */
+  text-decoration: none; /* Removes underline from link */
+}
+
+.settings-link img {
+  margin-right: 15px; /* Adds space between icon and text */
+  width: 30px; /* Adjust the size of the icon */
+  height: auto; /* Keeps aspect ratio */
+}
+
+.settings-link h4 {
+  margin: 0; /* Removes default margin */
+  font-size: 24px; /* Adjusts font size */
+  text-decoration: none;
+}
+
 
 .button2{
 	display: inline-block;
@@ -572,4 +593,20 @@ border-radius: 4px;
 
 .styled-button2:hover {
   background-color: #0056b3;
+}
+
+#settingsButton {
+  float: right;
+  margin-right: 50px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#settingsButton:hover {
+  background-color: #5a6268;
 }
