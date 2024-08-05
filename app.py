@@ -190,19 +190,6 @@ def create_admin_user():
 
 
 
-class UserAccess(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    access_level = db.Column(db.String(50), nullable=False)
-    role = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<UserAccess(user_id={self.user_id}, access_level={self.access_level}, role={self.role})>'
-
-
-
 
 
 
@@ -334,6 +321,7 @@ def dashboard():
         return render_template(
             'dashboard.html',
             user=user,
+            user_role=user.is_admin,  # Pass user role to template
             sense_data=sense_data,
             filter_option=filter_option,
             pagination=sense_data_pagination,
@@ -616,48 +604,36 @@ def stop_simulation():
     return jsonify({'message': 'Simulation stopped successfully'}), 200
 
 
+#settings butoon for column 
+
+@app.route('/settings')
+def settings():
+    if 'email' in session:
+        user = User.query.filter_by(email=session['email']).first()
+        if user.is_admin:
+            return render_template('settings.html', title="Settings")
+        else:
+            return redirect('/dashboard')  # Redirect to dashboard or another page
+    return redirect('/login')
+  
+
+@app.route('/client-onboarding')
+def client_onboarding():
+    return render_template('client_onboarding.html')
+
+@app.route('/access-onboarding')
+def access_onboarding():
+    return render_template('access_onboarding.html')
 
 
 
-#user access 
-@app.route('/manage_access')
-def manage_access():
-    access_records = UserAccess.query.all()
-    return render_template('manage_access.html', access_records=access_records)
+#to display table 
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    user_list = [{'name': user.name, 'email': user.email, 'is_admin': user.is_admin} for user in users]
+    return jsonify(user_list)
 
-@app.route('/add_access', methods=['POST'])
-def add_access():
-    user_id = request.form['user_id']
-    access_level = request.form['access_level']
-    role = request.form['role']
-
-    new_access = UserAccess(user_id=user_id, access_level=access_level, role=role)
-    db.session.add(new_access)
-    db.session.commit()
-    
-    return redirect(url_for('manage_access'))
-
-@app.route('/edit_access/<int:id>', methods=['GET', 'POST'])
-def edit_access(id):
-    access_record = UserAccess.query.get_or_404(id)
-    
-    if request.method == 'POST':
-        access_record.user_id = request.form['user_id']
-        access_record.access_level = request.form['access_level']
-        access_record.role = request.form['role']
-        
-        db.session.commit()
-        return redirect(url_for('manage_access'))
-
-    return render_template('edit_access.html', access_record=access_record)
-
-@app.route('/delete_access/<int:id>', methods=['POST'])
-def delete_access(id):
-    access_record = UserAccess.query.get_or_404(id)
-    db.session.delete(access_record)
-    db.session.commit()
-    
-    return redirect(url_for('manage_access'))
 
 
 
