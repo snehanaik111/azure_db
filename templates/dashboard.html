@@ -82,15 +82,16 @@
                         alt="blog"> 
                     <h4> Profile</h4> 
                 </div> 
+                <div class="nav-option option6">
+                  {% if user_role == 1 %}
+                  <a href="{{ url_for('settings') }}" class="settings-link">
+                    <img src="https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png" class="nav-img" alt="settings">
+                    <h4>Settings</h4>
+                  </a>
+                  {% endif %}
+                </div>
+                
 
-                <div class="nav-option option6"> 
-                    <img src= 
-"https://media.geeksforgeeks.org/wp-content/uploads/20221210183320/4.png"
-                        class="nav-img" 
-                        alt="settings"> 
-                    <h4> Settings</h4> 
-                </div> 
->
     
       
         <div class="nav-option logout">
@@ -164,6 +165,11 @@
           startAutoRefresh();
       });
   </script>
+  <br>
+
+ 
+</script>
+
     <div class="report-container">
       <div class="report-header">
         <h1 class="recent-Articles">Recent Activity</h1>
