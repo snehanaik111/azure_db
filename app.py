@@ -635,7 +635,14 @@ def get_users():
     return jsonify(user_list)
 
 
-
+@app.route('/api/counts', methods=['GET'])
+def get_counts():
+    total_clients = User.query.filter_by(is_admin=0).count()
+    total_companies = User.query.filter_by(is_admin=1).count()  # Adjust this if necessary
+    return jsonify({
+        'totalClients': total_clients,
+        'totalCompanies': total_companies
+    })
 
 if __name__ == '__main__':
     
