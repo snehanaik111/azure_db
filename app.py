@@ -1,4 +1,4 @@
-from flask import Flask, request,send_file, render_template, redirect, session, url_for, jsonify
+from flask import Flask, request,send_file, render_template, redirect, session, url_for, jsonify,flash
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
 import logging
@@ -14,7 +14,7 @@ import urllib.parse
 from datetime import datetime
 import pyodbc
 import traceback 
-
+from flask_migrate import Migrate
 
 import random
 import threading
@@ -56,7 +56,7 @@ print(f"Connection String: {app.config['SQLALCHEMY_DATABASE_URI']}")
 
 db = SQLAlchemy(app)
 app.secret_key = 'secret_key'
-
+migrate = Migrate(app, db)
 # Define conversion table
 conversion_table = {
     240: 8.875,
@@ -103,20 +103,21 @@ conversion_table = {
     0: 0,
     "Sensor Dead Band": 0,
 }
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     is_admin = db.Column(db.Integer)
+    status = db.Column(db.Boolean, default=True)  # Add this line
 
-    def __init__(self, email, password, name, is_admin):
+    def __init__(self, email, password, name, is_admin,status):
         self.name = name
         self.email = email
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        self.is_admin = is_admin       
-    
+        self.is_admin = is_admin
+        self.status = status  # Default status is True
+
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
@@ -179,10 +180,11 @@ def create_admin_user():
     admin_email = 'admin@gmail.com'
     admin_password = 'admin'
     admin_name = 'Admin'
+    status=True # Set the default status to active
     
     existing_admin = User.query.filter_by(email=admin_email).first()
     if not existing_admin:
-        admin_user = User(email=admin_email, password=admin_password, name=admin_name, is_admin=1)
+        admin_user = User(email=admin_email, password=admin_password, name=admin_name, is_admin=1,status=status)
         db.session.add(admin_user)
         db.session.commit()
         print("Admin user created")
@@ -214,7 +216,7 @@ def signup():
         password = request.form['password']
         is_admin = request.form['is_admin']
 
-        new_user = User(name=name, email=email, password=password, is_admin=is_admin)
+        new_user = User(name=name, email=email, password=password, is_admin=is_admin,status=0)
         db.session.add(new_user)
         db.session.commit()
         return redirect('/login')
@@ -242,6 +244,7 @@ def api_signup():
         return jsonify({"message": "User registered successfully"}), 201
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
+    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -254,13 +257,16 @@ def login():
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
-            session['email'] = user.email
-            if user.is_admin == 1:
-                return redirect('/dashboard')
-            elif user.is_admin == 0:
-                return redirect('/dashboard')
+            if not user.status:
+                 error = 'Your account is inactive. Please contact support.'
+            else:
+                session['email'] = user.email
+                if user.is_admin:
+                    return redirect('/dashboard')
+                else:
+                    return redirect('/dashboard')
         else:
-            error = 'Please provide correct credentials to login.'
+            error = 'Invalid credentials. Please try again.'
 
     return render_template('login.html', error=error)
 
@@ -631,8 +637,17 @@ def access_onboarding():
 @app.route('/api/users', methods=['GET'])
 def get_users():
     users = User.query.all()
-    user_list = [{'name': user.name, 'email': user.email, 'is_admin': user.is_admin} for user in users]
+    user_list = []
+    for user in users:
+        user_list.append({
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'status': user.status,
+            'is_admin': user.is_admin
+        })
     return jsonify(user_list)
+
 
 
 @app.route('/api/counts', methods=['GET'])
@@ -643,6 +658,21 @@ def get_counts():
         'totalClients': total_clients,
         'totalCompanies': total_companies
     })
+
+
+  
+@app.route('/api/users/<int:user_id>/status', methods=['POST'])
+def update_user_status(user_id):
+    user = User.query.get(user_id)
+    if user:
+        status = request.json.get('status')
+        user.status = status
+        db.session.commit()
+        return jsonify({'message': 'User status updated successfully'})
+    else:
+        return jsonify({'message': 'User not found'}), 404
+
+
 
 if __name__ == '__main__':
     
